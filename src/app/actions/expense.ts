@@ -31,14 +31,15 @@ export async function addExpense(data: {
   const expense = await prisma.expense.create({
     data: {
       groupId: data.groupId,
-      description: data.description,
+      title: data.description,
       amount: data.amount,
+      splitType: "EXACT",
       date: data.date || new Date(),
       paidById: data.paidById,
       participants: {
         create: data.participants.map((p) => ({
           userId: p.userId,
-          amount: p.amount,
+          amountOwed: p.amount,
         })),
       },
     },
@@ -70,15 +71,16 @@ export async function recordSettlement(data: {
   const expense = await prisma.expense.create({
     data: {
       groupId: data.groupId,
-      description: "Settlement",
+      title: "Settlement",
       amount: data.amount,
+      splitType: "EXACT",
       date: new Date(),
       paidById: data.fromUserId, // A paid
       participants: {
         create: [
           {
             userId: data.toUserId, // for B
-            amount: data.amount,
+            amountOwed: data.amount,
           },
         ],
       },
