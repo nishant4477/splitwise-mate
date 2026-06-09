@@ -14,7 +14,7 @@ export function GroupInsights({ groupId }: { groupId: string }) {
     setError(null);
     try {
       const data = await getGroupInsights(groupId);
-      setInsights(data);
+      setInsights(data || "No insights could be generated at this time.");
     } catch (err) {
       setError("Failed to fetch insights.");
       console.error(err);
