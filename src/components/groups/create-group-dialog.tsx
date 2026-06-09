@@ -46,14 +46,10 @@ export function CreateGroupDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        asChild
+        className="shimmer-btn flex items-center justify-center gap-2 bg-gradient-to-r from-[#eae151] to-[#ffd60a] text-black px-4 py-2 rounded-xl font-bold hover:shadow-lg hover:shadow-[#ffd60a]/25 transition-all active:scale-[0.98] text-sm"
       >
-          <button
-            className="shimmer-btn flex items-center justify-center gap-2 bg-gradient-to-r from-[#eae151] to-[#ffd60a] text-black px-4 py-2 rounded-xl font-bold hover:shadow-lg hover:shadow-[#ffd60a]/25 transition-all active:scale-[0.98] text-sm"
-          >
         <Plus className="w-4 h-4" />
         Create Group
-      </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-[#09090b] border-white/[0.08] text-white">
         <DialogHeader>
