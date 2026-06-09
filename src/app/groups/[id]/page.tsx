@@ -5,6 +5,7 @@ import { getGroupDetails } from "@/app/actions/group";
 import { calculateSettlements } from "@/lib/settlements";
 import { SettlementCard } from "@/components/settlements/settlement-card";
 import { GroupInsights } from "@/components/groups/group-insights";
+import { InviteButton } from "@/components/groups/invite-button";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -152,14 +153,15 @@ export default async function GroupPage({
               </div>
             </div>
 
-            <Link
-              href={`/groups/${group.id}/add-expense`}
-              className="shimmer-btn flex items-center gap-2 bg-gradient-to-r from-[#eae151] to-[#ffd60a] text-black px-5 py-3 rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-[#ffd60a]/25 transition-all active:scale-[0.98] whitespace-nowrap"
-            >
-              <Plus className="w-4 h-4" />
-              Add Expense
-            </Link>
-          </div>
+              <InviteButton groupId={group.id} />
+              <Link
+                href={`/groups/${group.id}/add-expense`}
+                className="shimmer-btn flex items-center gap-2 bg-gradient-to-r from-[#eae151] to-[#ffd60a] text-black px-5 py-3 rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-[#ffd60a]/25 transition-all active:scale-[0.98] whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4" />
+                Add Expense
+              </Link>
+            </div>
 
           {/* Stats row */}
           <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/[0.06]">

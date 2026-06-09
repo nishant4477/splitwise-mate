@@ -179,3 +179,17 @@ export async function getDashboardStats() {
   };
 }
 
+export async function getGroupForJoin(groupId: string) {
+  return prisma.group.findUnique({
+    where: { id: groupId },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      _count: {
+        select: { members: true },
+      },
+    },
+  });
+}
+
