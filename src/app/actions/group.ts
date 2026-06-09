@@ -103,9 +103,9 @@ export async function joinGroup(groupId: string) {
   // Check if already a member
   const existing = await prisma.groupMember.findUnique({
     where: {
-      groupId_userId: {
-        groupId,
+      userId_groupId: {
         userId: session.user.id,
+        groupId,
       },
     },
   });
