@@ -116,5 +116,5 @@ If you need to brush up on the technologies used in this project before an inter
 ---
 
 ## 👨‍💻 Author
-**Nishant Kumar**
+**Nishant Rajput**
 Feel free to reach out if you have any questions about the architecture or implementation!
