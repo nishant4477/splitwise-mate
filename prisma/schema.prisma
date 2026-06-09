@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  
+  // Payment Links
+  venmoUsername String?
+  paypalUsername String?
+  cashappTag    String?
+  upiId         String?
+
+  // NextAuth Relations
+  accounts      Account[]
+  sessions      Session[]
+
+  // App Relations
+  memberships   GroupMember[]
+  expensesPaid  Expense[] @relation("PaidBy")
+  expenseShares ExpenseParticipant[]
+  settlementsPaid Settlement[] @relation("Payer")
+  settlementsReceived Settlement[] @relation("Receiver")
+  notifications Notification[]
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  currency    String   @default("USD")
+  createdAt   DateTime @default(now())
+
+  members     GroupMember[]
+  expenses    Expense[]
+  settlements Settlement[]
+}
+
+model GroupMember {
+  id        String   @id @default(cuid())
+  role      String   @default("MEMBER") // ADMIN, MEMBER
+  joinedAt  DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  groupId   String
+  group     Group    @relation(fields: [groupId], references: [id])
+
+  @@unique([userId, groupId])
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  title       String
+  amount      Float
+  currency    String   @default("USD")
+  date        DateTime
+  notes       String?
+  receiptUrl  String?
+  category    String?  // Rent, Food, Travel, etc.
+  splitType   String   // EQUAL, CUSTOM, PERCENTAGE, SHARES
+  createdAt   DateTime @default(now())
+  isRecurring Boolean  @default(false)
+
+  groupId     String
+  group       Group    @relation(fields: [groupId], references: [id])
+  paidById    String
+  paidBy      User     @relation("PaidBy", fields: [paidById], references: [id])
+
+  participants ExpenseParticipant[]
+}
+
+model ExpenseParticipant {
+  id          String  @id @default(cuid())
+  amountOwed  Float   // The calculated amount this user owes
+  share       Float?  // Could be percentage or share count
+
+  expenseId   String
+  expense     Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User    @relation(fields: [userId], references: [id])
+}
+
+model Settlement {
+  id          String   @id @default(cuid())
+  amount      Float
+  currency    String   @default("USD")
+  notes       String?
+  status      String   @default("COMPLETED") // PENDING, COMPLETED
+  createdAt   DateTime @default(now())
+
+  payerId     String
+  payer       User     @relation("Payer", fields: [payerId], references: [id])
+  receiverId  String
+  receiver    User     @relation("Receiver", fields: [receiverId], references: [id])
+  groupId     String?
+  group       Group?   @relation(fields: [groupId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // EXPENSE_ADDED, SETTLEMENT_RECEIVED, etc.
+  content   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// =====================================
+// NextAuth Required Models
+// =====================================
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
