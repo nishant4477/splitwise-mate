@@ -104,7 +104,7 @@ export default async function GroupPage({
 
     // Participants get negative balance
     expense.participants.forEach((p) => {
-      balances[p.userId] = (balances[p.userId] || 0) - p.amount;
+      balances[p.userId] = (balances[p.userId] || 0) - p.amountOwed;
     });
   });
 
@@ -437,7 +437,7 @@ export default async function GroupPage({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-baseline gap-2">
                             <span className="text-sm font-semibold text-white truncate">
-                              {expense.description}
+                              {expense.title}
                             </span>
                             {expense.category && (
                               <span className="text-[10px] bg-white/[0.05] text-neutral-400 px-1.5 py-0.5 rounded-md">

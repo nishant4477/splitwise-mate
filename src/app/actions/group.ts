@@ -149,7 +149,7 @@ export async function getDashboardStats() {
     group.expenses.forEach((expense) => {
       // Calculate category spending (only my share)
       const myParticipant = expense.participants.find((p) => p.userId === userId);
-      const myShare = myParticipant ? myParticipant.amount : 0;
+      const myShare = myParticipant ? myParticipant.amountOwed : 0;
       
       if (myShare > 0) {
         const category = expense.category || "Other";
